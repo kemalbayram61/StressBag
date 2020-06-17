@@ -1,0 +1,24 @@
+{
+  "name": "stressbag",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kemalbayram61/StressBag.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kemalbayram61/StressBag/issues"
+  },
+  "homepage": "https://github.com/kemalbayram61/StressBag#readme",
+  "dependencies": {
+    "requirejs": "^2.3.6",
+    "three": "^0.117.1"
+  },
+  "devDependencies": {},
+  "description": ""
+}

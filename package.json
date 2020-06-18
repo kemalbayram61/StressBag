@@ -16,6 +16,8 @@
   },
   "homepage": "https://github.com/kemalbayram61/StressBag#readme",
   "dependencies": {
+    "p5": "^1.0.0",
+    "pako": "^1.0.11",
     "requirejs": "^2.3.6",
     "three": "^0.117.1"
   },

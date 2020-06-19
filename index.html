@@ -6,6 +6,10 @@
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta http-equiv="X-UA-Compatible" content="ie-edge">
 
+        <!--import bootstrap for effective view-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
         <!--Script files required for the project-->
 
         <!--Necessary scripts for 3D scene and character animations-->
@@ -23,19 +27,42 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
         <!--<script src='Script/ml5.min.js'></script>-->
         <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
+        <!--<script src='node_modules/requirejs/require.js'></script>-->
 
     </head>
-    <body>
-        <!--box to show the characters and animations-->
-        <div class="loading" id="js-loader">
-            <div class="loader"></div>
+    <body style="font-family:Verdana;color:#aaaaaa;">
+        <div style="background-color:#e5e5e5;padding:15px;text-align:center;">
+            <h1>Stress Bag</h1>
         </div>
-        <div class="wrapper">
-            <canvas id="scene"></canvas>
+
+        <div style="overflow:auto">
+
+            <div class="menu">
+                <button class="button Boss">Boss Character</button>
+                <button class="button Zombie">Zombie Character</button>
+                <button class="button BadGirl">Bad Girl</button>
+                <button class="button BadBoy">Bad Boy</button>
+            </div>
+
+            <div class="main">
+                <div class="progress"><div class="progress-bar progress-bar-striped" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div></div>
+                <!--box to show the characters and animations-->
+                <div class="loading" id="js-loader">
+                    <div class="loader"></div>
+                </div>
+                <div class="wrapper">
+                    <canvas id="scene"></canvas>
+                </div>
+            </div>
+
         </div>
+
         
         <!--converting the motion obtained with deep learning into animation on the 3-D character-->
         <script src='Script/activation_estimation.js'></script>
-        <!--<script src='Script/webgl_scene.js'></script>-->
+        <script src='Script/webgl_scene.js'></script>
+        <link rel="stylesheet" type="text/css" href="Style/page_edit.css" />
+        <link rel="stylesheet" type="text/css" href="Style/style.css" />
+        <div style="background-color:#e5e5e5;text-align:center;padding:10px;margin-top:7px;">© copyright ttso.org.tr</div>
     </body>
 </html>

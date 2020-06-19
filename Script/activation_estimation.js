@@ -30,6 +30,9 @@ function setup(){
     };
     brain.load(modelInfo,brainLoaded);
 
+    //Hides the video screen created by the p5 module
+    var p5Canvas = document.getElementById('defaultCanvas0');
+    p5Canvas.style.display = "none";
 }
 
 function getPose(poses){
@@ -63,9 +66,9 @@ function classifyPose(){
         inputs.push(dist3);
         inputs.push(dist4);
 
-        brain.classify(inputs,getResult);
-        //let est= brain.classify(inputs);
-        //return est;
+        //brain.classify(inputs,getResult);
+        let est= brain.classify(inputs);
+        return est;
 
     }else{
         setTimeout(classifyPose,100);
@@ -84,6 +87,7 @@ function getResult(error,results){
         }
     }
     console.log(counter);
+    //console.log(getDistance());
     //console.log(results[0].label);
     //console.log(results[0].confidence);
     classifyPose();
@@ -113,5 +117,9 @@ function draw(){
     //textSize(50);
     //textAlign(100,100);
     //text(counter,width/2,height/2);
+}
+
+function getDistance(){
+    return pose.rightEye.x-pose.leftEye.x;
 }
 

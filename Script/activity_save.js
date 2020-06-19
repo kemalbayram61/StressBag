@@ -46,8 +46,6 @@ function setup(){
         debug: true
     }
     brain = ml5.neuralNetwork(options);
-
-
 }
 
 function modelLoaded(){
@@ -60,7 +58,7 @@ function gotPoses(poses){
         pose=poses[0].pose;
         if(pose){
             skeleton=poses[0].skeleton;
-
+            
             if(saveState=='collecting'){
                 let inputs = [];
                 let dist1=dist(pose.rightWrist.x,pose.rightWrist.y,pose.rightShoulder.x,pose.rightShoulder.y);

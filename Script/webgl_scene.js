@@ -1,12 +1,18 @@
 
 //set our main variables
 let scene,
+    modelHealth=100,
+    lastPose = 'idle',
+    humanDistanceBar,
+    humanPose,
+    distance = 0,
     renderer,
     camera,
     model,
     possibleAnims,
     mixer,
     idle,
+    punchSound=new Audio('Sounds/punch.mp3'),
     clock = new THREE.Clock(),
     currentlyAnimating = false,
     raycaster = new THREE.Raycaster(),
@@ -96,13 +102,13 @@ function init(){
     );
 
     //add lights
-    let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.61);
+    let hemiLight = new THREE.HemisphereLight(0xFFC695, 0xFFC695, 0.61);
     hemiLight.position.set(0,50,0);
     scene.add(hemiLight);
 
     //add directional light
     let d = 8.25;
-    let dirLight = new THREE.DirectionalLight(0xffffff, 0.54);
+    let dirLight = new THREE.DirectionalLight(0xFFC695, 0.54);
     dirLight.position.set(-8, 12, 8);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize = new THREE.Vector2(1024, 1024);
@@ -127,14 +133,25 @@ function init(){
     floor.position.y = -11;
     scene.add(floor);
     
-    let geometry = new THREE.SphereGeometry(8, 32, 32);
-    let material = new THREE.MeshBasicMaterial({ color: 0x9bffaf }); // 0xf2ce2e 
-    let sphere = new THREE.Mesh(geometry, material);
+    //add human distance bar
+    let geometryDstB = new THREE.SphereGeometry(2, 32, 32);
+    let materialDstB = new THREE.MeshBasicMaterial({ color: 0x9bffaf }); // 0xf2ce2e 
+    humanDistanceBar= new THREE.Mesh(geometryDstB, materialDstB);
         
-    sphere.position.z = -15;
-    sphere.position.y = -2.5;
-    sphere.position.x = -0.25;
-    scene.add(sphere); 
+    humanDistanceBar.position.z = -15;
+    humanDistanceBar.position.y = 10;
+    humanDistanceBar.position.x = -18;
+    scene.add(humanDistanceBar);
+  
+}
+
+//if the distance between the two eyes is between 14-17 pixels, the distance is sufficient
+function isDistanceEnaught(value){
+    if(value>=8 && value<=17){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function update(){
@@ -147,8 +164,50 @@ function update(){
         camera.updateProjectionMatrix();
       }
       
-       renderer.render(scene, camera);
-      requestAnimationFrame(update);
+    renderer.render(scene, camera);
+    requestAnimationFrame(update);
+    
+    //Receiving pose data by communicating with the activity estimation module
+    humanPose = classifyPose();
+
+    if(humanPose){
+        distance =Math.abs(getDistance()); //retrieving the distance data of the user to act from the activity_estimation module
+        humanPose.then(function(result){
+            
+            if(result[0].confidence>0.95 && isDistanceEnaught(Math.abs(distance))){
+                if(result[0].label!='idle' && lastPose!=result[0].label){
+                    modelHealth = modelHealth-10;
+                    if(result[0].label == 'right_punch'){
+                        punchEffect();
+                        changeAnimation(idle,0.25,possibleAnims[1],0.25);
+                    }
+                    else if(result[0].label == 'left_punch'){
+                        punchEffect();
+                        changeAnimation(idle,0.25,possibleAnims[2],0.25);
+                    }
+
+                    //if your model is dead, do the animation of dying
+                    //make your life 100 again after death
+                    if(modelHealth<=0){
+                        changeAnimation(idle,0.25,possibleAnims[3],0.25);
+                        changeAnimation(idle,0.25,possibleAnims[4],0.25);
+                        modelHealth = 100;
+                    }
+                }
+                lastPose=result[0].label;
+            }
+        });
+        if(distance<7 || distance>24){
+            humanDistanceBar.material.color.setHex(0xFF0000);
+        }
+        else if(distance<14 || distance>17){
+            humanDistanceBar.material.color.setHex(0xFF6400);
+        }
+        else{
+            humanDistanceBar.material.color.setHex(0x005DFF);
+        }
+    }
+
 }
 
 update();
@@ -180,6 +239,9 @@ function changeAnimation(from, fSpeed, to, tSpeed){
     },to._clip.duration * 1000 - ((tSpeed + fSpeed) * 1000));
 }
 
+function punchEffect(){
+    punchSound.play();
+}
 
 
 

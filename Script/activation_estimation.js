@@ -16,8 +16,8 @@ function setup(){
     poseNet.on('pose',getPose);
 
     let options = {
-        inputs: 4,
-        outputs: 3,
+        inputs: 10,
+        outputs: 5,
         task: 'classification',
         debug: true
     }
@@ -58,13 +58,25 @@ function classifyPose(){
         let inputs = [];
         let dist1=dist(pose.rightWrist.x,pose.rightWrist.y,pose.rightShoulder.x,pose.rightShoulder.y);
         let dist2=dist(pose.leftWrist.x,pose.leftWrist.y,pose.leftShoulder.x,pose.leftShoulder.y);
-        let dist3=dist(pose.rightWrist.x,pose.rightWrist.y,pose.rightAnkle.x,pose.rightAnkle.y);
-        let dist4=dist(pose.leftWrist.x,pose.leftWrist.y,pose.leftAnkle.x,pose.leftAnkle.y);
+        let dist3=dist(pose.rightWrist.x,pose.rightWrist.y,pose.leftShoulder.x,pose.leftShoulder.y);
+        let dist4=dist(pose.leftWrist.x,pose.leftWrist.y,pose.rightShoulder.x,pose.rightShoulder.y);
+        let dist5=dist(pose.rightAnkle.x,pose.rightAnkle.y,pose.leftKnee.x,pose.leftKnee.y);
+        let dist6=dist(pose.leftAnkle.x,pose.leftAnkle.y,pose.rightKnee.x,pose.rightKnee.y);
+        let dist7=dist(pose.rightAnkle.x,pose.rightAnkle.y,pose.rightWrist.x,pose.rightWrist.y);
+        let dist8=dist(pose.rightAnkle.x,pose.rightAnkle.y,pose.leftWrist.x,pose.leftWrist.y);
+        let dist9=dist(pose.leftAnkle.x,pose.leftAnkle.y,pose.rightWrist.x,pose.rightWrist.y);
+        let dist10=dist(pose.leftAnkle.x,pose.leftAnkle.y,pose.leftWrist.x,pose.leftWrist.y);
 
         inputs.push(dist1);
         inputs.push(dist2);
         inputs.push(dist3);
         inputs.push(dist4);
+        inputs.push(dist5);
+        inputs.push(dist6);
+        inputs.push(dist7);
+        inputs.push(dist8);
+        inputs.push(dist9);
+        inputs.push(dist10);
 
         //brain.classify(inputs,getResult);
         let est= brain.classify(inputs);

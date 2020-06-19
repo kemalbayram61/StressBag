@@ -4,6 +4,10 @@ let scene,
     modelHealth=100,
     lastPose = 'idle',
     humanDistanceBar,
+    humanDistanceText,
+    humanDistanceTextLabel='Ditance Status',
+    humanHealthBar,
+    characterHealthText,
     humanPose,
     distance = 0,
     renderer,
@@ -22,7 +26,7 @@ let scene,
 init();
 
 function init(){
-    model_path = 'CharacterData/Boss/bossModelWithAnimation.glb';
+    model_path = 'CharacterData/BadBoy/badBoyFull.glb';
     const canvas = document.querySelector('#scene');
     const backgroundColor = 0xf1f1f1;
 
@@ -72,8 +76,9 @@ function init(){
             let idleAnimation='Armature.001|mixamo.com|Layer0';//animation code for idle animation
             let rightPunchAnimation='Armature.002|mixamo.com|Layer0';//animation code for right punch animation
             let leftPunchAnimation='Armature.003|mixamo.com|Layer0';//animation code for left punch animation
-            let dieAnimation='Armature.004|mixamo.com|Layer0';//animation code for die animation
-            let standUpAnimation='Armature.005|mixamo.com|Layer0';//animation code for stand up animation
+            let kickAnimation='Armature.004|mixamo.com|Layer0';//animation code for kick animation
+            let dieAnimation='Armature.005|mixamo.com|Layer0';//animation code for die animation
+            let standUpAnimation='Armature.006|mixamo.com|Layer0';//animation code for stand up animation
             
             let clips = fileAnimations.filter(val => val.name !== idleAnimation);
             
@@ -133,16 +138,72 @@ function init(){
     floor.position.y = -11;
     scene.add(floor);
     
-    //add human distance bar
-    let geometryDstB = new THREE.SphereGeometry(2, 32, 32);
-    let materialDstB = new THREE.MeshBasicMaterial({ color: 0x9bffaf }); // 0xf2ce2e 
-    humanDistanceBar= new THREE.Mesh(geometryDstB, materialDstB);
-        
-    humanDistanceBar.position.z = -15;
-    humanDistanceBar.position.y = 10;
-    humanDistanceBar.position.x = -18;
-    scene.add(humanDistanceBar);
-  
+    // add human distance bar
+    var geometry = new THREE.CircleBufferGeometry( 2, 32 );
+    var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    humanDistanceBar = new THREE.Mesh( geometry, material );
+    humanDistanceBar.position.x = -15;
+    humanDistanceBar.position.y = 5;
+    humanDistanceBar.position.z = -10;
+    scene.add( humanDistanceBar );
+
+    //add character health bar
+    var geometry = new THREE.RingGeometry( 0.5, 2, 32 );
+    var material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
+    humanHealthBar = new THREE.Mesh( geometry, material );
+    humanHealthBar.position.x = 15;
+    humanHealthBar.position.y = 5;
+    humanHealthBar.position.z = -10;
+    scene.add( humanHealthBar );
+
+    //add distance status label
+    var textLoaderDistance = new THREE.FontLoader();
+    textLoaderDistance.load('fonts/optimer_regular.typeface.js',function(font){
+        var textGeometry = new THREE.TextGeometry( humanDistanceTextLabel, {
+            font: font,
+            size: 1,
+            height: 0,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 0.1,
+            bevelSize: 0.1,
+            bevelOffset: 0,
+            
+        } );
+        var textMaterial = new THREE.MeshPhongMaterial({
+            color: 0xff0000, specular: 0xffffff
+        });
+        humanDistanceText = new THREE.Mesh(textGeometry,textMaterial);
+        humanDistanceText.position.x = -14;
+        humanDistanceText.position.y = 6;
+        humanDistanceText.position.z = 1;
+        scene.add(humanDistanceText);
+    });
+
+    //add human health label
+    var textLoaderHealth = new THREE.FontLoader();
+    textLoaderHealth.load('fonts/optimer_regular.typeface.js',function(font){
+        var textGeometryHlt = new THREE.TextGeometry( 'Character Health', {
+            font: font,
+            size: 1,
+            height: 0,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 0.1,
+            bevelSize: 0.1,
+            bevelOffset: 0,
+            
+        } );
+        var textMaterial = new THREE.MeshPhongMaterial({
+            color: 0xff0000, specular: 0xffffff
+        });
+        characterHealthText = new THREE.Mesh(textGeometryHlt,textMaterial);
+        characterHealthText.position.x = 6;
+        characterHealthText.position.y = 6;
+        characterHealthText.position.z = 1;
+        scene.add(characterHealthText);
+    });
+    healthEffect();
 }
 
 //if the distance between the two eyes is between 14-17 pixels, the distance is sufficient
@@ -151,6 +212,36 @@ function isDistanceEnaught(value){
         return true;
     }else{
         return false;
+    }
+}
+
+function healthEffect(){
+    if(modelHealth>=90){
+        humanHealthBar.material.color.setHex(0x41FF00);
+    }
+    else if(modelHealth>=80){
+        humanHealthBar.material.color.setHex(0x00FFE0);
+    }
+    else if(modelHealth>=70){
+        humanHealthBar.material.color.setHex(0x00C9FF);
+    }
+    else if(modelHealth>=60){
+        humanHealthBar.material.color.setHex(0x002CFF);
+    }
+    else if(modelHealth>=50){
+        humanHealthBar.material.color.setHex(0x5400FF);
+    }
+    else if(modelHealth>=40){
+        humanHealthBar.material.color.setHex(0xC100FF);
+    }
+    else if(modelHealth>=30){
+        humanHealthBar.material.color.setHex(0xFF00F6);
+    }
+    else if(modelHealth>=20){
+        humanHealthBar.material.color.setHex(0xFF00AF);
+    }
+    else if(modelHealth>=10){
+        humanHealthBar.material.color.setHex(0xFF0000);
     }
 }
 
@@ -175,8 +266,11 @@ function update(){
         humanPose.then(function(result){
             
             if(result[0].confidence>0.95 && isDistanceEnaught(Math.abs(distance))){
+                console.log(result[0].label);
                 if(result[0].label!='idle' && lastPose!=result[0].label){
-                    modelHealth = modelHealth-10;
+                    //health effect for health bar
+                    modelHealth=modelHealth-10;
+                    healthEffect();
                     if(result[0].label == 'right_punch'){
                         punchEffect();
                         changeAnimation(idle,0.25,possibleAnims[1],0.25);
@@ -185,18 +279,29 @@ function update(){
                         punchEffect();
                         changeAnimation(idle,0.25,possibleAnims[2],0.25);
                     }
+                    else if(result[0].label == 'right_kick'){
+                        punchEffect();
+                        changeAnimation(idle,0.25,possibleAnims[3],0.25);
+                    }
+                    else if(result[0].label == 'left_kick'){
+                        punchEffect();
+                        changeAnimation(idle,0.25,possibleAnims[3],0.25);
+                    }
 
                     //if your model is dead, do the animation of dying
                     //make your life 100 again after death
                     if(modelHealth<=0){
-                        changeAnimation(idle,0.25,possibleAnims[3],0.25);
                         changeAnimation(idle,0.25,possibleAnims[4],0.25);
+                        changeAnimation(idle,0.25,possibleAnims[5],0.25);
                         modelHealth = 100;
+                        healthEffect();
                     }
                 }
                 lastPose=result[0].label;
             }
         });
+        
+
         if(distance<7 || distance>24){
             humanDistanceBar.material.color.setHex(0xFF0000);
         }

@@ -20,5 +20,6 @@ First Full Release Date:
 Project Developer:
 - Kemal Bayram
 - kemalbayramag@gmail.com
+
 Project Place:
 - Trabzon Chamber of Commerce and Industry / Trabzon

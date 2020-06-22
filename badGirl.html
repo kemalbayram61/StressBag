@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr-TR">
+    <head>
+        <!--Meta features requested on our html page-->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="ie-edge">
+
+        <!--Script files required for the project-->
+
+        <!--Necessary scripts for 3D scene and character animations-->
+        <!--<script src='Script/three.min.js'></script>-->
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/108/three.min.js'></script>
+        <!--<script src='Script/GLTFLoader.js'></script>-->
+        <script src='https://cdn.jsdelivr.net/gh/mrdoob/Three.js@r92/examples/js/loaders/GLTFLoader.js'></script>
+
+        <!--Scripts required for pose estimation and deep learning-->
+        <!--<script src='Script/p5.min.js'></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+        <!--<script src='Script/p5.dom.min.js'></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+        <!--<script src='Script/p5.sound.min.js'></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
+        <!--<script src='Script/ml5.min.js'></script>-->
+        <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
+        <!--<script src='node_modules/requirejs/require.js'></script>-->
+
+    </head>
+    <body style="font-family:Verdana;color:#aaaaaa;">
+        <div style="background-color:#e5e5e5;padding:15px;text-align:center;">
+            <h1>Stress Bag</h1>
+        </div>
+
+        <div style="overflow:auto">
+
+            <div class="menu">
+                <button onclick="window.location.href='/boss.html'"     class="button Boss">Boss Character</button>
+                <button onclick="window.location.href='/zombie.html'"   class="button Zombie">Zombie Character</button>
+                <button onclick="window.location.href='/badGirl.html'"  class="button BadGirl">Bad Girl</button>
+                <button onclick="window.location.href='/badBoy.html'"   class="button BadBoy">Bad Boy</button>
+            </div>
+
+            <div class="main">
+                <!--box to show the characters and animations-->
+                <div class="loading" id="js-loader">
+                    <div class="loader"></div>
+                </div>
+                <div class="wrapper">
+                    <canvas id="scene"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        
+        <!--converting the motion obtained with deep learning into animation on the 3-D character-->
+        <script src='Script/activation_estimation.js'></script>
+        <script src='Script/webgl_scene_badgirl.js'></script>
+        <link rel="stylesheet" type="text/css" href="Style/style.css" />
+        <div style="background-color:#e5e5e5;text-align:center;padding:10px;margin-top:7px;">© copyright ttso.org.tr</div>
+    </body>
+</html>

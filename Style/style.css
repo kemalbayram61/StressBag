@@ -39,10 +39,10 @@
     cursor: pointer;
   }
 
-.Boss {background-color: #4CAF50;} /* Green */
-.Zombie {background-color: #008CBA;} /* Blue */
-.BadGirl {background-color: #4CAF50;} /* Green */
-.BadBoy {background-color: #008CBA;} /* Blue */
+.Boss {background-color: #00f7ff;} /* Green */
+.Zombie {background-color: #63ba00;} /* Blue */
+.BadGirl {background-color: #ff98fa;} /* Green */
+.BadBoy {background-color: #ff6262;} /* Blue */
 
 
 
